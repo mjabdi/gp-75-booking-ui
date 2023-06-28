@@ -4,7 +4,7 @@ import PaymentService from "./services/PaymentService";
 
 import { PaymentForm, CreditCard } from "react-square-web-payments-sdk";
 
-export const SANDBOX = true;
+export const SANDBOX = false;
 
 const LIVE_APPLICATION_ID = "sq0idp-8-tRTRJuDMDeTBHxJq02xg"; // Live
 const LIVE_LOCATION_ID = "L2SBNYPV0XWVJ"; //Live
