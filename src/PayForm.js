@@ -6,7 +6,7 @@ import TextField from "@material-ui/core/TextField";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
 import GlobalState from "./GlobalState";
-import PaymentForm from "./PaymentForm";
+import PaymentForm from "./PaymentFormNew";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import dateformat from "dateformat";
 import { Backdrop } from "@material-ui/core";
@@ -124,7 +124,7 @@ export default function PayForm() {
         gutterBottom
         style={{ marginBottom: "30px" }}
       >
-        Pay Deposit
+        Pay Online
       </Typography>
 
       {(!loaded || !personInfo) && (
@@ -140,7 +140,7 @@ export default function PayForm() {
           <div>
 
             <Alert severity="info" style={{marginBottom:"15px", fontSize:"0.95rem" ,lineHeight:"1.5rem", textAlign:"justify"}}>
-            This is the deposit to secure your appointment, you can cancel anytime up-to 48 hours of your appointment.
+            This is the full payment to secure your appointment, you can cancel anytime up-to 48 hours of your appointment.
 
             </Alert>
 

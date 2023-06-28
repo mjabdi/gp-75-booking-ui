@@ -44,6 +44,9 @@ import LiveHelpIcon from '@material-ui/icons/LiveHelp';
 import faq from './FAQ';
 import dateformat from 'dateformat';
 
+import PayForm from './PayForm';
+
+
 
 function Copyright() {
   return (
@@ -148,7 +151,7 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
-const steps = ['Appoinment Date', 'Appoinment Time', 'Basic Info', 'Review'];
+const steps = ['Appoinment Date', 'Appoinment Time', 'Basic Info', 'Review', "Pay Online"];
 
 function getStepContent(step) {
   switch (step) {
@@ -160,6 +163,9 @@ function getStepContent(step) {
       return <InformationForm />;
     case 3:
         return <ReviewForm />;
+    case 4: 
+        return <PayForm />;   
+     
     default:
       throw new Error('Unknown step');
   }
@@ -296,25 +302,26 @@ export default function Checkout() {
     setActiveStep(4);
   }
 
+  const [validating, setValidating] = React.useState(false);
 
-  const handleNext = () => {
 
-    if (state.activeStep === 3)
-    {
-      // if (!state.dataConfirmed)
-      // {
-      //   setState(state => ({...state, dataConfirmedError : true }));
-      //   return;
-      // }
-  
+  const handleNext = async () => {
 
-      setSubmiting(true);
-      submitForm();
+    try{
+      setValidating(true)
+      const isValid = await ValidateStep(state, setState, state.activeStep)
+      setValidating(false)
 
-    }else if (ValidateStep(state, setState, state.activeStep)) {
-    
+      if (isValid) {
         setActiveStep(state.activeStep + 1);
+       }
     }
+    catch(ex)
+    {
+      console.error(ex)
+      setValidating(false)
+    }
+
   };
 
   const handleBack = () => {
@@ -326,237 +333,264 @@ export default function Checkout() {
       <CssBaseline />
       <AppBar position="absolute" color="default" className={classes.appBar}>
         <Toolbar>
-
-
-        <Grid
+          <Grid
             container
             direction="row"
-            spacing= {1}
+            spacing={1}
             justify="center"
             alignItems="center"
-        >
-
-
-            <Grid item  xs={10}>
-                  <Typography  style={{fontWeight: "400"}} variant="h6" color="inherit" noWrap>
-                    Medical Express Clinic
-                  </Typography>
+          >
+            <Grid item xs={10}>
+              <Typography
+                style={{ fontWeight: "400" }}
+                variant="h6"
+                color="inherit"
+                noWrap
+              >
+                Medical Express Clinic
+              </Typography>
             </Grid>
 
             <Grid item xs={2}>
-                    <img className={classes.logoImage} src={logoImage} alt="logo image"/> 
+              <img
+                className={classes.logoImage}
+                src={logoImage}
+                alt="logo image"
+              />
             </Grid>
-
-        </Grid>  
+          </Grid>
         </Toolbar>
       </AppBar>
       <main className={classes.layout}>
         <Paper className={classes.paper}>
-
-        {state.activeStep <= 3 && (
-          <Typography component="h1" variant="h6" align="center">
-                Book Appointment Online
-          </Typography>
-        )}
-      
+          {state.activeStep <= 3 && (
+            <Typography component="h1" variant="h6" align="center">
+              Book Appointment Online
+            </Typography>
+          )}
 
           <React.Fragment>
-              {state.activeStep < steps.length ? (
-                  <React.Fragment>
-                        <BrowserView>
-                                <Stepper activeStep={state.activeStep} className={classes.stepper}>
-                                    {steps.map((label) => (
-                                    <Step key={label}>
-                                        <StepLabel>{label}</StepLabel>
-                                    </Step>
-                                    ))}
-                                </Stepper>
-                        </BrowserView>
+            {state.activeStep < steps.length ? (
+              <React.Fragment>
+                <BrowserView>
+                  <Stepper
+                    activeStep={state.activeStep}
+                    className={classes.stepper}
+                  >
+                    {steps.map((label) => (
+                      <Step key={label}>
+                        <StepLabel>{label}</StepLabel>
+                      </Step>
+                    ))}
+                  </Stepper>
+                </BrowserView>
 
-                        <MobileView>
-                                    <MobileStepper 
-                                            steps={maxSteps}
-                                            position="static"
-                                            variant="progress"
-                                            
-                                            activeStep={state.activeStep}
-                                    />
-                        </MobileView>  
-                  </React.Fragment>
-              ) : (
-                  <React.Fragment>
-
-                      
-                  </React.Fragment>
-              )}
-          </React.Fragment>                  
+                <MobileView>
+                  <MobileStepper
+                    steps={maxSteps}
+                    position="static"
+                    variant="progress"
+                    activeStep={state.activeStep}
+                  />
+                </MobileView>
+              </React.Fragment>
+            ) : (
+              <React.Fragment></React.Fragment>
+            )}
+          </React.Fragment>
 
           {/* <PersonsBox/> */}
 
           <React.Fragment>
             {state.activeStep === steps.length ? (
-
-              <ResultsForm/>
-
+              <ResultsForm />
             ) : (
               <React.Fragment>
                 {getStepContent(state.activeStep)}
                 <div className={classes.buttons}>
                   {state.activeStep !== 0 && (
-                    <Button disabled={submiting} onClick={handleBack} onTouchTap = {handleBack}  className={classes.button}>
+                    <Button
+                      disabled={submiting}
+                      onClick={handleBack}
+                      onTouchTap={handleBack}
+                      className={classes.button}
+                    >
                       Back
                     </Button>
                   )}
 
-                  {((state.activeStep === 2 || state.activeStep === 3 ) && state.persons && state.persons.length >= 1) && (
-                    <Button 
-                            // variant="contained"
-                            color="secondary"
-                            onTouchTap = {proceedToSubmit} 
-                            onClick={proceedToSubmit} className={classes.button}>
-                      Skip to Submit
+                  {(state.activeStep === 2 || state.activeStep === 3) &&
+                    state.persons &&
+                    state.persons.length >= 1 && (
+                      <Button
+                        // variant="contained"
+                        color="secondary"
+                        onTouchTap={proceedToSubmit}
+                        onClick={proceedToSubmit}
+                        className={classes.button}
+                      >
+                        Skip to Submit
+                      </Button>
+                    )}
+
+                  {state.activeStep < steps.length - 1 && (
+                    <Button
+                      disabled={submiting}
+                      variant="contained"
+                      color="primary"
+                      onTouchTap={handleNext}
+                      onClick={handleNext}
+                      className={classes.button}
+                    >
+                      {state.activeStep == steps.length - 2
+                        ? "PROCEED TO PAYMENT"
+                        : "Next"}
                     </Button>
                   )}
-
-                  <Button
-                    disabled={submiting} 
-                    variant="contained"
-                    color="primary"
-                    onTouchTap = {handleNext} 
-                    onClick={handleNext}
-                    className={classes.button}
-                  >
-                    {state.activeStep === steps.length - 1 ? 'Submit' : 'Next'}
-                  </Button>
-                  
-
-
-
-
                 </div>
               </React.Fragment>
             )}
           </React.Fragment>
-
         </Paper>
 
-        <Button 
-                  variant="contained" 
-                  className={classes.privacyButton} 
-                  color="secondary"
-                  startIcon={<HttpsIcon/>}
-                  onClick={handleClickOpen('paper')}
-                  onTouchTap={handleClickOpen('paper')} 
-                  >
-             Privacy
-         </Button>
-         <Button 
-                  variant="contained" 
-                  className={classes.faqButton} 
-                  color="secondary"
-                  startIcon={<LiveHelpIcon/>}
-                  onClick={handleClickOpenFAQ('paper')}
-                  onTouchTap={handleClickOpenFAQ('paper')} 
-                  >
-             FAQ
-         </Button>
-         <Dialog
-                        open={open}
-                        onClose={handleClose}
-                        scroll={scroll}
-                        aria-labelledby="scroll-dialog-title"
-                        aria-describedby="scroll-dialog-description"
-                      >
-          <DialogTitle id="scroll-dialog-title">
-              PRIVACY NOTICE
-          </DialogTitle>
+        <Button
+          variant="contained"
+          className={classes.privacyButton}
+          color="secondary"
+          startIcon={<HttpsIcon />}
+          onClick={handleClickOpen("paper")}
+          onTouchTap={handleClickOpen("paper")}
+        >
+          Privacy
+        </Button>
+        <Button
+          variant="contained"
+          className={classes.faqButton}
+          color="secondary"
+          startIcon={<LiveHelpIcon />}
+          onClick={handleClickOpenFAQ("paper")}
+          onTouchTap={handleClickOpenFAQ("paper")}
+        >
+          FAQ
+        </Button>
+        <Dialog
+          open={open}
+          onClose={handleClose}
+          scroll={scroll}
+          aria-labelledby="scroll-dialog-title"
+          aria-describedby="scroll-dialog-description"
+        >
+          <DialogTitle id="scroll-dialog-title">PRIVACY NOTICE</DialogTitle>
           <DialogContent dividers={scroll === "paper"}>
             <DialogContentText
               id="scroll-dialog-description"
               ref={descriptionElementRef}
               tabIndex={-1}
             >
-              <div style={{ textAlign: "justify", padding: "0px", color:"#333" }}>
+              <div
+                style={{ textAlign: "justify", padding: "0px", color: "#333" }}
+              >
                 <p>
-                  Medical Express Clinic collects and holds the personal data of patients registered at the clinic so as to provide safe and effective ongoing care for our patients.
+                  Medical Express Clinic collects and holds the personal data of
+                  patients registered at the clinic so as to provide safe and
+                  effective ongoing care for our patients.
                 </p>
                 <p>
-                  Medical records are kept confidentially and securely under lock and key or securely on our server. They are primarily used for the safe and effective delivery of care.
-                </p>  
-                <p>
-                  Your medical record may be subject to clinical audit and management review in order for Medical Express Clinic to maintain and improve our provision of care.
+                  Medical records are kept confidentially and securely under
+                  lock and key or securely on our server. They are primarily
+                  used for the safe and effective delivery of care.
                 </p>
                 <p>
-                  Please review our Patient Information handout, given to you prior to registration for more information.
+                  Your medical record may be subject to clinical audit and
+                  management review in order for Medical Express Clinic to
+                  maintain and improve our provision of care.
                 </p>
                 <p>
-                  If you would like to review a full copy of our Privacy and Decency Policy, please ask at reception.
+                  Please review our Patient Information handout, given to you
+                  prior to registration for more information.
                 </p>
                 <p>
-                  Thank you
+                  If you would like to review a full copy of our Privacy and
+                  Decency Policy, please ask at reception.
                 </p>
-                <p>
-                  Medical Express Clinic
-                </p>
-
+                <p>Thank you</p>
+                <p>Medical Express Clinic</p>
               </div>
             </DialogContentText>
-                        </DialogContent>
-                        <DialogActions>
-                          <Button onClick={handleClose} color="primary">
-                            Close
-                          </Button>
-                      
-                        </DialogActions>
-      </Dialog>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose} color="primary">
+              Close
+            </Button>
+          </DialogActions>
+        </Dialog>
 
-      <Dialog
-                        open={openFAQ}
-                        onClose={handleCloseFAQ}
-                        scroll={scrollFAQ}
-                        aria-labelledby="scroll-dialog-title-FAQ"
-                        aria-describedby="scroll-dialog-description-FAQ"
-                      >
-                        <DialogTitle id="scroll-dialog-title">FAQ</DialogTitle>
-                        <DialogContent dividers={scroll === 'paper'}>
-                          <DialogContentText
-                            id="scroll-dialog-description-FAQ"
-                            ref={descriptionElementRefFAQ}
-                            tabIndex={-1}
-                          >
-                            <div style={{textAlign:"justify", padding:"10px"}}>
-                             
-                            {faq.map(element => (
-                              <React.Fragment>
-                                <p style={{borderLeft: "4px solid red", background: "#eee", fontWeight: "600", paddingLeft: "10px",paddingRight: "10px", lineHeight: "30px"}}>
-                                  <span style={{color: "red" , fontSize:"24px"}}> Q. </span>
-                                    {element.question} 
-                                </p>
+        <Dialog
+          open={openFAQ}
+          onClose={handleCloseFAQ}
+          scroll={scrollFAQ}
+          aria-labelledby="scroll-dialog-title-FAQ"
+          aria-describedby="scroll-dialog-description-FAQ"
+        >
+          <DialogTitle id="scroll-dialog-title">FAQ</DialogTitle>
+          <DialogContent dividers={scroll === "paper"}>
+            <DialogContentText
+              id="scroll-dialog-description-FAQ"
+              ref={descriptionElementRefFAQ}
+              tabIndex={-1}
+            >
+              <div style={{ textAlign: "justify", padding: "10px" }}>
+                {faq.map((element) => (
+                  <React.Fragment>
+                    <p
+                      style={{
+                        borderLeft: "4px solid red",
+                        background: "#eee",
+                        fontWeight: "600",
+                        paddingLeft: "10px",
+                        paddingRight: "10px",
+                        lineHeight: "30px",
+                      }}
+                    >
+                      <span style={{ color: "red", fontSize: "24px" }}>
+                        {" "}
+                        Q.{" "}
+                      </span>
+                      {element.question}
+                    </p>
 
-                                <p style={{borderLeft: "4px solid #999", background: "#fff", fontWeight: "400", color: "#555" ,paddingLeft: "10px",paddingRight: "30px", lineHeight: "50px"}}>
-                                  <span style={{color: "#555" , fontSize:"24px"}}> A. </span>
-                                    {element.answer} 
-                                </p>
+                    <p
+                      style={{
+                        borderLeft: "4px solid #999",
+                        background: "#fff",
+                        fontWeight: "400",
+                        color: "#555",
+                        paddingLeft: "10px",
+                        paddingRight: "30px",
+                        lineHeight: "50px",
+                      }}
+                    >
+                      <span style={{ color: "#555", fontSize: "24px" }}>
+                        {" "}
+                        A.{" "}
+                      </span>
+                      {element.answer}
+                    </p>
+                  </React.Fragment>
+                ))}
+              </div>
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseFAQ} color="primary">
+              Close
+            </Button>
+          </DialogActions>
+        </Dialog>
 
-                              </React.Fragment>
-
-                            ))}
-
-                          </div>
-                          </DialogContentText>
-                        </DialogContent>
-                        <DialogActions>
-                          <Button onClick={handleCloseFAQ} color="primary">
-                            Close
-                          </Button>
-                      
-                        </DialogActions>
-          </Dialog>
-
-      <Backdrop className={classes.backdrop} open={submiting} >
-        <CircularProgress color="inherit" />
-      </Backdrop>
-
+        <Backdrop className={classes.backdrop} open={submiting}>
+          <CircularProgress color="inherit" />
+        </Backdrop>
 
         <Copyright />
       </main>

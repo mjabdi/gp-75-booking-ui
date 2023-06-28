@@ -177,8 +177,8 @@ const useStyles = makeStyles((theme) => ({
   },
 
   infoDataPrice: {
-    color: theme.palette.secondary.main,
-    fontWeight: "600",
+    color: "#ff0040",
+    fontWeight: "800",
   },
 }));
 
@@ -220,7 +220,7 @@ export default function ReviewForm() {
             textAlign: "justify",
           }}
         >
-          You can always change or cancel your appointment up-to 24 hours to your appointment with ease through your patient portal
+          You can always change or cancel your appointment up-to 48 working hours to your appointment with ease through your patient portal
         </Alert>
       </div>
       </Fade>
@@ -289,6 +289,18 @@ export default function ReviewForm() {
                     </span>
                     <span className={classes.infoData}> {"Private GP"} </span>
                   </li>
+
+                  <li className={classes.li}>
+                      <span className={classes.infoTitleTime}>
+                        <FontAwesomeIcon
+                          icon={faPoundSign}
+                          className={classes.icon}
+                        />
+                        Price:
+                      </span>
+                      <span className={classes.infoDataPrice}> £75.00 </span>
+                    </li>
+
                 </ul>
               </div>
             </Grid>
@@ -325,7 +337,7 @@ export default function ReviewForm() {
           </div>
         </Fade>
         <div className={classes.terms}>
-          By clicking on the "SUBMIT" button you are agreeing with our{" "}
+          By clicking on the "PROCEED TO PAYMENT" button you are agreeing with our{" "}
           <a
             className={classes.link}
             target="_blank"

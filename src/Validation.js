@@ -1,6 +1,7 @@
 import * as EmailValidator from 'email-validator';
+import BookService from './services/BookService';
 
-export default function ValidateStep (state,setState, step) 
+export default async function ValidateStep (state,setState, step) 
   {
     var error = false;
 
@@ -44,6 +45,26 @@ export default function ValidateStep (state,setState, step)
       {
         setState(state => ({...state, phoneError : true}));
         error = true;
+      }
+    }
+    else if (step === 3) {
+  
+      if (!error) {
+        if (!state.bookingRef) {
+          try {
+            const res = await BookService.getNewReference();
+            if (res && res.data && res.data.ref) {
+              setState((state) => ({ ...state, bookingRef: res.data.ref }));
+            }
+            else
+            {
+              error = true;
+            }
+          } catch (ex) {
+            console.error(ex);
+            error = true;
+          }
+        }
       }
     }
 

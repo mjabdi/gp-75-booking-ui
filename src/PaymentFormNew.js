@@ -1,0 +1,125 @@
+import "./sqpaymentform.css";
+import React from "react";
+import PaymentService from "./services/PaymentService";
+
+import { PaymentForm, CreditCard } from "react-square-web-payments-sdk";
+
+export const SANDBOX = true;
+
+const LIVE_APPLICATION_ID = "sq0idp-8-tRTRJuDMDeTBHxJq02xg"; // Live
+const LIVE_LOCATION_ID = "L2SBNYPV0XWVJ"; //Live
+
+const SANDBOX_APPLICATION_ID = "sandbox-sq0idb-HxCN0_lvfnlC15ZMFkUCdQ"; //SANDBOX
+const SANDBOX_LOCATION_ID = "LBR8YPCPR878R"; // SANDBOX
+
+export default class PaymentFormNew extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      personInfo: props.personInfo,
+      errorMessages: [],
+    };
+
+    this.cardNonceResponseReceived = this.cardNonceResponseReceived.bind(this);
+    this.createVerificationDetails = this.createVerificationDetails.bind(this);
+  }
+
+  // cardNonceResponseReceived = async (
+  //   errors,
+  //   nonce,
+  //   cardData,
+  //   buyerVerificationToken
+  // ) => {
+  //   if (errors) {
+  //     this.setState({ errorMessages: errors.map((error) => error.message) });
+  //     return;
+  //   }
+
+  //   this.setState({ errorMessages: [] });
+
+  //   try {
+  //     this.props.onStart();
+  //     const result = await PaymentService.doPayment({
+  //       nonce: nonce,
+  //       token: buyerVerificationToken,
+  //       personInfo: this.state.personInfo,
+  //     });
+  //     console.log(result);
+  //     this.props.onComplete(result);
+  //   } catch (ex) {
+  //     console.error(ex);
+  //     this.props.onError(ex);
+  //   }
+  // };
+
+
+  cardNonceResponseReceived = async (
+    token,
+    buyer
+    ) => {
+      console.log({ token, buyer });
+
+        this.setState({ errorMessages: [] });
+
+        try {
+          this.props.onStart();
+          const result = await PaymentService.doPayment({
+            nonce: token.token,
+            token: buyer.token,
+            personInfo: this.state.personInfo,
+          });
+          console.log(result);
+          this.props.onComplete(result);
+        } catch (ex) {
+          console.error(ex);
+          this.props.onError(ex);
+        }
+    };
+
+
+  createVerificationDetails() {
+    return {
+      amount: "75.00",
+      currencyCode: "GBP",
+      intent: "CHARGE",
+      billingContact: {
+        name: this.state.personInfo.fullname,
+        email: this.state.personInfo.email,
+        phone: this.state.personInfo.phone,
+      },
+    };
+  }
+
+  render() {
+    return (
+      <PaymentForm
+        applicationId={SANDBOX ? SANDBOX_APPLICATION_ID : LIVE_APPLICATION_ID}
+        locationId={SANDBOX ? SANDBOX_LOCATION_ID : LIVE_LOCATION_ID}
+        overrides={{
+          scriptSrc: SANDBOX
+            ? "https://sandbox.web.squarecdn.com/v1/square.js"
+            : "https://js.squareup.com/v2/paymentform", // this is an example, not real URL
+        }}
+        cardTokenizeResponseReceived={this.cardNonceResponseReceived}
+        createVerificationDetails={this.createVerificationDetails}
+      >
+        <div style={{ padding: "20px 10px" }}>
+          <CreditCard 
+           buttonProps={{
+            css: {
+              backgroundColor: '#e35b34',
+              color: '#fff',
+              '&:hover': {
+                backgroundColor: '#fc5423',
+                transition: "all 0.5s ease-in-out"
+              },
+            },
+          }}
+          >
+              <span style={{fontWeight:"600", fontSize:"1.2em"}}>Pay £75</span>
+           </CreditCard>
+        </div>
+      </PaymentForm>
+    );
+  }
+}
