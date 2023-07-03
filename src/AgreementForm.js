@@ -293,7 +293,7 @@ useEffect( () => {
         >
 
 
-            <Grid item item xs={10}>
+            <Grid item xs={10}>
                   <Typography  style={{fontWeight: "400"}} variant="h6" color="inherit" noWrap>
                     Medical Express Clinic
                   </Typography>
@@ -313,7 +313,7 @@ useEffect( () => {
 
 
           <Typography style={{ marginBottom: "30px"}} component="h1" variant="h6" align="left">
-              Patients wishing to book an appointment must confirm that:
+          You are pre-booking a 30 minute consultation with a GP at Medical Express Clinic, please confirm the following:
           </Typography>
 
             <ul style={{fontSize:"1.1rem", color:"#333", textAlign:"left"}}>
@@ -323,6 +323,14 @@ useEffect( () => {
               <li style={{marginTop:"15px"}}>
                 {`I have not been in contact recently with a confirmed COVID-19 case.`}
               </li>
+              <li style={{marginTop:"15px"}}>
+                {`I am pr-booking an appointment for a 30 minute consultation with a General Practitioner. `}
+              </li>
+              <li style={{marginTop:"15px"}}>
+                {`I have read and agree to the Terms and Conditions of the service and am aware of the 24 hour cancellation policy. `}
+              </li>
+
+
             </ul>
                   
 
