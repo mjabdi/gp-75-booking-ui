@@ -46,6 +46,19 @@ export default async function ValidateStep (state,setState, step)
         setState(state => ({...state, phoneError : true}));
         error = true;
       }
+
+      if (!state.gender)
+      {
+        setState(state => ({...state, genderError : true}));
+        error = true;
+      }
+
+      if (!state.birthDate || state.birthDate.length !== 10)
+      {
+        setState(state => ({...state, birthDateError : true}));
+        error = true;
+      }
+
     }
     else if (step === 3) {
   

@@ -84,6 +84,26 @@ export default function InformationForm() {
 
   const [notes, setNotes] = React.useState(state.notes ?? "");
 
+  const [gender, setGender] = React.useState(state.gender ?? "");
+
+  const [birthDate, setBirthDate] = React.useState(state.birthDate ?? null);
+
+  const birthDateChanged = (dateStr) =>
+  {
+
+      setBirthDate(dateStr);
+      setState(state => ({...state, birthDate: dateStr}));
+      setState(state => ({...state, birthDateError : false}));
+  }  
+
+  const genderChanged = (event) => {
+    setGender(event.target.value);
+    setState((state) => ({ ...state, gender: event.target.value }));
+    if (event.target.value) {
+      setState((state) => ({ ...state, genderError: false }));
+    }
+  };
+
   const notesChanged = (event) => {
     setNotes(event.target.value);
     setState((state) => ({ ...state, notes: event.target.value }));
@@ -202,6 +222,37 @@ export default function InformationForm() {
             // helperText = 'This email address is where you will receive your results. Please tick the box below to confirm that this is a private email address to which you are happy for us to send your results.'
           />
         </Grid>
+
+        <Grid item xs={12} md={12}>
+               <DateField
+                error={state.birthDateError}
+                title="Date of Birth"
+                value={birthDate}
+                dateChanged={birthDateChanged}
+             >
+
+             </DateField>
+        </Grid>
+
+
+        <Grid item xs={12} md={12}>
+          <FormControl required fullWidth>
+            <InputLabel id="gender-label">Gender</InputLabel>
+            <Select
+              error={state.genderError ? true : false}
+              required
+              labelId="gender-label"
+              id="gender-select"
+              value={gender}
+              onChange={genderChanged}
+            >
+              <MenuItem value={"M"}>{`Male`}</MenuItem>
+              <MenuItem value={"F"}>{`Female`}</MenuItem>
+            </Select>
+          </FormControl>
+        </Grid>
+
+
 
         {/* <Grid item xs={12} className={classes.formControl} >
           <FormControlLabel className={classes.formControl}  style={ {color: state.emailConfirmedError ? "red" : ''}} 
