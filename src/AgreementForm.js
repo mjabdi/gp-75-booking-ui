@@ -317,12 +317,12 @@ useEffect( () => {
           </Typography>
 
             <ul style={{fontSize:"1.1rem", color:"#333", textAlign:"left"}}>
-              <li style={{marginTop:"15px"}}>
+              {/* <li style={{marginTop:"15px"}}>
                 {`I do not have any symptoms of COVID-19.`}
               </li>
               <li style={{marginTop:"15px"}}>
                 {`I have not been in contact recently with a confirmed COVID-19 case.`}
-              </li>
+              </li> */}
               <li style={{marginTop:"15px"}}>
                 {`I am pr-booking an appointment for a 30 minute consultation with a General Practitioner. `}
               </li>
