@@ -313,7 +313,7 @@ useEffect( () => {
 
 
           <Typography style={{ marginBottom: "30px"}} component="h1" variant="h6" align="left">
-          You are pre-booking a 30 minute consultation with a GP at Medical Express Clinic, please confirm the following:
+          You are pre-booking a 20 minute consultation with a GP at Medical Express Clinic, please confirm the following:
           </Typography>
 
             <ul style={{fontSize:"1.1rem", color:"#333", textAlign:"left"}}>
@@ -324,7 +324,7 @@ useEffect( () => {
                 {`I have not been in contact recently with a confirmed COVID-19 case.`}
               </li> */}
               <li style={{marginTop:"15px"}}>
-                {`I am pr-booking an appointment for a 30 minute consultation with a General Practitioner. `}
+                {`I am pr-booking an appointment for a 20 minute consultation with a General Practitioner. `}
               </li>
               <li style={{marginTop:"15px"}}>
                 {`I have read and agree to the Terms and Conditions of the service and am aware of the 24 hour cancellation policy. `}
