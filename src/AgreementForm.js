@@ -329,6 +329,10 @@ useEffect( () => {
               <li style={{marginTop:"15px"}}>
                 {`I have read and agree to the Terms and Conditions of the service and am aware of the 24 hour cancellation policy. `}
               </li>
+              <li style={{marginTop:"15px"}}>
+                {`The patient to be seen at the appointment is over 13 years old. `}
+              </li>
+
 
 
             </ul>
